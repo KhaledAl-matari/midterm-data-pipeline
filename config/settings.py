@@ -32,3 +32,7 @@ QUARANTINE_COLLECTION = "orders_quarantine"
 
 # ملف حفظ نتائج التشغيل والقياسات
 RESULTS_FILE = REPORTS_DIR / "results.json"
+
+# مجلدات Spark المؤقتة على القرص D لتجنب استهلاك مساحة القرص C
+SPARK_TEMP_DIR = PROJECT_ROOT / "spark_temp"
+SPARK_WAREHOUSE_DIR = PROJECT_ROOT / "spark_warehouse"

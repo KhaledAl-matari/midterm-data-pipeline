@@ -5,3 +5,6 @@ data/*.csv
 data/*.parquet
 *.log
 .venv/
+
+spark_temp/
+spark_warehouse/
