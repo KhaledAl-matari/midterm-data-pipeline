@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-19T03:30:09.043659+00:00",
-  "total_runs": 1,
+  "updated_at": "2026-08-19T03:41:01.583663+00:00",
+  "total_runs": 2,
   "runs": [
     {
       "id_run": "e6cad633-42b4-407e-bea0-012dfa91bf49",
@@ -51,6 +51,50 @@
       "consistency": {
         "raw_rows": 100000,
         "outcome_rows": 100000,
+        "pass": true
+      }
+    },
+    {
+      "id_run": "cc5d2242-6848-4e43-b7bb-1934d3820163",
+      "generated_at": "2026-08-19T03:41:01.542774+00:00",
+      "input": {
+        "file_name": "orders_batch_test.csv",
+        "file_size_mb": 0.01,
+        "threshold_mb": 200,
+        "engine": "python_batch"
+      },
+      "raw_load": {
+        "rows": 20,
+        "partitions": null,
+        "seconds_elapsed": 0.031,
+        "write_seconds": null,
+        "throughput": 644.69
+      },
+      "quality": {
+        "valid": 0,
+        "corrected": 16,
+        "quarantined": 4,
+        "error_counts": {
+          "INVALID_EMAIL": 3,
+          "BAD_JSON": 1,
+          "MISSING_CUSTOMER_ID": 1,
+          "INVALID_MONEY": 1,
+          "INVALID_QTY": 1
+        }
+      },
+      "upsert": {
+        "inserted": 0,
+        "updated": 2,
+        "unchanged": 14
+      },
+      "elt": {
+        "processed": 20,
+        "seconds_elapsed": 0.0414,
+        "throughput": 483.14
+      },
+      "consistency": {
+        "raw_rows": 20,
+        "outcome_rows": 20,
         "pass": true
       }
     }
