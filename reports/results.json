@@ -1,0 +1,58 @@
+{
+  "updated_at": "2026-08-19T03:30:09.043659+00:00",
+  "total_runs": 1,
+  "runs": [
+    {
+      "id_run": "e6cad633-42b4-407e-bea0-012dfa91bf49",
+      "generated_at": "2026-08-19T03:30:09.005761+00:00",
+      "input": {
+        "file_name": "orders_small_sample.csv",
+        "file_size_mb": 41.77,
+        "threshold_mb": 200,
+        "engine": "python_batch"
+      },
+      "raw_load": {
+        "rows": 100000,
+        "partitions": null,
+        "seconds_elapsed": 3.5297,
+        "write_seconds": null,
+        "throughput": 28330.67
+      },
+      "quality": {
+        "valid": 0,
+        "corrected": 88747,
+        "quarantined": 11253,
+        "error_counts": {
+          "INVALID_EMAIL": 3560,
+          "MISSING_CUSTOMER_ID": 1411,
+          "BAD_JSON": 1338,
+          "INVALID_ORDER_DATE": 722,
+          "MISSING_ORDER_ID": 721,
+          "INVALID_STATUS": 718,
+          "INVALID_CURRENCY": 713,
+          "INVALID_PHONE": 707,
+          "INVALID_ITEM_TOTAL": 683,
+          "NEGATIVE_PAYMENT_AMOUNT": 677,
+          "EMPTY_ITEMS": 677,
+          "INVALID_MONEY": 674,
+          "INVALID_QTY": 674
+        }
+      },
+      "upsert": {
+        "inserted": 88117,
+        "updated": 614,
+        "unchanged": 16
+      },
+      "elt": {
+        "processed": 100000,
+        "seconds_elapsed": 34.5163,
+        "throughput": 2897.19
+      },
+      "consistency": {
+        "raw_rows": 100000,
+        "outcome_rows": 100000,
+        "pass": true
+      }
+    }
+  ]
+}
