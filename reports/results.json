@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-19T03:41:01.583663+00:00",
-  "total_runs": 2,
+  "updated_at": "2026-08-21T00:03:08.556472+00:00",
+  "total_runs": 3,
   "runs": [
     {
       "id_run": "e6cad633-42b4-407e-bea0-012dfa91bf49",
@@ -52,7 +52,9 @@
         "raw_rows": 100000,
         "outcome_rows": 100000,
         "pass": true
-      }
+      },
+      "run_id": "e6cad633-42b4-407e-bea0-012dfa91bf49",
+      "batch_size": 5000
     },
     {
       "id_run": "cc5d2242-6848-4e43-b7bb-1934d3820163",
@@ -96,7 +98,92 @@
         "raw_rows": 20,
         "outcome_rows": 20,
         "pass": true
-      }
+      },
+      "run_id": "cc5d2242-6848-4e43-b7bb-1934d3820163",
+      "batch_size": 5000
+    },
+    {
+      "id_run": "90b9088b-1158-4097-8e91-43b94837e86a",
+      "generated_at": "2026-08-21T00:03:00.582785+00:00",
+      "input": {
+        "file_name": "orders_huge_mixed_quality.csv",
+        "file_size_mb": 12650.32,
+        "threshold_mb": 200,
+        "engine": "pyspark"
+      },
+      "raw_load": {
+        "rows": 30000000,
+        "partitions": 99,
+        "seconds_elapsed": 535.4824,
+        "write_seconds": 488.4852,
+        "throughput": 56024.25
+      },
+      "quality": {
+        "valid": 0,
+        "corrected": 27271346,
+        "quarantined": 2728654,
+        "error_counts": {
+          "BAD_JSON": 419906,
+          "MISSING_CUSTOMER_ID": 419474,
+          "INVALID_EMAIL": 418709,
+          "INVALID_ORDER_DATE": 210524,
+          "INVALID_STATUS": 210194,
+          "INVALID_CURRENCY": 210190,
+          "INVALID_PHONE": 210042,
+          "INVALID_QTY": 210021,
+          "INVALID_ITEM_TOTAL": 210018,
+          "EMPTY_ITEMS": 209934,
+          "INVALID_MONEY": 209432,
+          "MISSING_ORDER_ID": 209392,
+          "NEGATIVE_PAYMENT_AMOUNT": 209114
+        }
+      },
+      "upsert": {
+        "inserted": 27079084,
+        "updated": 192262,
+        "unchanged": 0
+      },
+      "elt": {
+        "processed": 30000000,
+        "seconds_elapsed": 11231.608,
+        "throughput": 2671.03
+      },
+      "consistency": {
+        "raw_rows": 30000000,
+        "outcome_rows": 30000000,
+        "pass": true
+      },
+      "file_name": "orders_huge_mixed_quality.csv",
+      "file_size_mb": 12650.32,
+      "engine_used": "pyspark",
+      "rows_read": 30000000,
+      "raw_loaded": 30000000,
+      "valid_count": 0,
+      "corrected_count": 27271346,
+      "quarantine_count": 2728654,
+      "elapsed_seconds": 11767.0904,
+      "throughput": 2549.48,
+      "batch_size": null,
+      "partitions": 99,
+      "error_case_counts": {
+        "BAD_JSON": 419906,
+        "MISSING_CUSTOMER_ID": 419474,
+        "INVALID_EMAIL": 418709,
+        "INVALID_ORDER_DATE": 210524,
+        "INVALID_STATUS": 210194,
+        "INVALID_CURRENCY": 210190,
+        "INVALID_PHONE": 210042,
+        "INVALID_QTY": 210021,
+        "INVALID_ITEM_TOTAL": 210018,
+        "EMPTY_ITEMS": 209934,
+        "INVALID_MONEY": 209432,
+        "MISSING_ORDER_ID": 209392,
+        "NEGATIVE_PAYMENT_AMOUNT": 209114
+      },
+      "inserted_count": 27079084,
+      "updated_count": 192262,
+      "unchanged_count": 0,
+      "run_id": "90b9088b-1158-4097-8e91-43b94837e86a"
     }
   ]
 }

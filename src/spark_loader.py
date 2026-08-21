@@ -100,6 +100,8 @@ def load_raw_with_pyspark(file_path: Path) -> dict:
             spark.read
             .option("header", "true")
             .option("encoding", "UTF-8")
+            .option("quote", '"')
+            .option("escape", '"')
             .option("mode", "PERMISSIVE")
             .schema(ORDERS_RAW_SCHEMA)
             .csv(str(file_path))

@@ -1,0 +1,27 @@
+{
+  "sample_file": "orders_small_sample.csv",
+  "same_sample_rows": 100000,
+  "python_batch": {
+    "batch_size": 5000,
+    "elapsed_seconds": 3.5297,
+    "throughput_rows_per_second": 28330.67
+  },
+  "pyspark": {
+    "partitions": 8,
+    "elapsed_seconds": 6.2685,
+    "throughput_rows_per_second": 15952.69
+  },
+  "comparison": {
+    "faster_on_small_sample": "python_batch",
+    "python_speedup_vs_spark": 1.78,
+    "explanation": "Python Batch is faster on the 100000-row sample because Spark has startup and distributed-execution overhead. PySpark is selected for large files because it provides parallel DataFrame processing and scalable partition-based execution."
+  },
+  "large_file_observation": {
+    "file_name": "orders_huge_mixed_quality.csv",
+    "rows": 30000000,
+    "engine_used": "pyspark",
+    "partitions": 99,
+    "raw_load_seconds": 535.4824,
+    "raw_load_throughput": 56024.25
+  }
+}

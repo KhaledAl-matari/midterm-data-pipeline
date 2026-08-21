@@ -63,6 +63,7 @@ def build_run_metrics(
 
     result = {
         "id_run": id_run,
+        "run_id": id_run,
         "generated_at": datetime.now(timezone.utc),
         "input": {
             "file_name": loader_metrics.get("file_name"),
@@ -111,6 +112,33 @@ def build_run_metrics(
         "outcome_rows": outcome_rows,
         "pass": raw_rows == outcome_rows,
     }
+
+    # ???????? ???????? ?????? ??? ???? ?? ????? ???????.
+    raw_seconds = loader_metrics.get("seconds_elapsed") or 0
+    elt_seconds = elt_metrics.get("seconds_elapsed") or 0
+    total_seconds = raw_seconds + elt_seconds
+
+    result.update({
+        "file_name": loader_metrics.get("file_name"),
+        "file_size_mb": file_size_mb,
+        "engine_used": loader_metrics.get("used_engine"),
+        "rows_read": loader_metrics.get("read_rows", 0),
+        "raw_loaded": loader_metrics.get("loaded_raw", 0),
+        "valid_count": elt_metrics.get("valid", 0),
+        "corrected_count": elt_metrics.get("corrected", 0),
+        "quarantine_count": elt_metrics.get("quarantined", 0),
+        "elapsed_seconds": round(total_seconds, 4),
+        "throughput": (
+            round((loader_metrics.get("read_rows", 0) or 0) / total_seconds, 2)
+            if total_seconds > 0 else 0
+        ),
+        "batch_size": loader_metrics.get("batch_size", loader_metrics.get("size_batch")),
+        "partitions": loader_metrics.get("partitions"),
+        "error_case_counts": result["quality"]["error_counts"],
+        "inserted_count": elt_metrics.get("inserted", 0),
+        "updated_count": elt_metrics.get("updated", 0),
+        "unchanged_count": elt_metrics.get("unchanged", 0),
+    })
 
     return result
 

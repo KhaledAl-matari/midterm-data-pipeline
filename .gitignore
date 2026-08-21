@@ -8,3 +8,7 @@ data/*.parquet
 
 spark_temp/
 spark_warehouse/
+
+*.bak*
+
+.vscode/

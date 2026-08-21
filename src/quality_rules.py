@@ -55,9 +55,9 @@ def _add_correction(
         corrections.append(
             {
                 "field": field,
-                "old_value": old_value,
-                "new_value": new_value,
-                "rule": rule,
+                "original_value": old_value,
+                "corrected_value": new_value,
+                "rule_code": rule,
             }
         )
 
@@ -283,37 +283,49 @@ def normalize_email(
     error_codes: list[str],
     error_details: list[dict[str, Any]],
 ) -> None:
-    """توحيد البريد الصحيح وحجر البريد غير القابل للتصحيح."""
+    """????? ????? ?????? ??????? ???? ???? ???? ?????."""
     field = "customer_email"
     old_value = record.get(field)
 
     if old_value is None or not str(old_value).strip():
         return
 
+    # ????? ?????? ?????? ???????? ????????.
     value = str(old_value).strip().lower()
+
+    # ????? ??????? ?????? ??? ??? ???? ???????:
+    # user@@mail..com -> user@mail.com
+    corrected_value = re.sub(r"@{2,}", "@", value)
+    corrected_value = re.sub(r"\.{2,}", ".", corrected_value)
 
     pattern = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
 
-    if not re.fullmatch(pattern, value) or ".." in value:
+    # ?? ??? ?? ??? ??? ???? ??? ??????? ????? ??? ????.
+    if not re.fullmatch(pattern, corrected_value):
         _add_error(
             error_codes,
             error_details,
             "INVALID_EMAIL",
             field,
             old_value,
-            "صيغة البريد الإلكتروني غير صالحة ولا يمكن تصحيحها بأمان",
+            "???? ?????? ?????????? ??? ????? ??? ???? ??????? ?????",
         )
         return
+
+    if corrected_value != value:
+        rule_code = "EMAIL_REPEATED_SYMBOLS"
+    else:
+        rule_code = "NORMALIZE_EMAIL"
 
     _add_correction(
         corrections,
         field,
         old_value,
-        value,
-        "NORMALIZE_EMAIL",
+        corrected_value,
+        rule_code,
     )
 
-    record[field] = value
+    record[field] = corrected_value
 
 
 def normalize_enums(
