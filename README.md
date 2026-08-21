@@ -389,7 +389,7 @@ Stable Business Key
 
 نقطة التشغيل الرئيسية للمشروع:
 
-python src/main.py --input "path/to/orders.csv"
+python -m src.main --input "path/to/orders.csv"
 
 بعد ذلك يقوم File Router تلقائيًا باختيار:
 
@@ -464,3 +464,4 @@ Java 17
 PyTest
 Git
 GitHub
+
