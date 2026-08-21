@@ -1,0 +1,10 @@
+{
+  "order_id": "طلب-1626850",
+  "original_total": 36500.0,
+  "updated_total": 36501.0,
+  "document_count_before": 1,
+  "document_count_after_update": 1,
+  "document_count_after_restore": 1,
+  "restored_total": 36500.0,
+  "result": "PASS"
+}

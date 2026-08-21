@@ -1,0 +1,13 @@
+{
+  "run_id": "90b9088b-1158-4097-8e91-43b94837e86a",
+  "second_processing_run": {
+    "processed": 30000000,
+    "corrected": 27271346,
+    "quarantine": 2728654,
+    "inserted": 0,
+    "updated": 382505,
+    "unchanged": 26888841
+  },
+  "idempotency_result": "PASS",
+  "explanation": "Reprocessing the same raw run created zero new validated business records. Existing order_id values were updated or remained unchanged."
+}
