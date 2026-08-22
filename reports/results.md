@@ -168,7 +168,7 @@ python -m pytest tests -v
 
 النتيجة النهائية:
 
-11 passed
+12 passed
 0 failed
 10. MongoDB Collections
 
@@ -209,3 +209,4 @@ reports/performance_comparison.json
 والصور والأدلة محفوظة في:
 
 reports/screenshots/
+

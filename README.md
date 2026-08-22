@@ -370,7 +370,7 @@ python -m pytest tests -v
 
 نتيجة الاختبار الأخيرة:
 
-11 passed
+12 passed
 0 failed
 
 وتغطي الاختبارات:
@@ -464,4 +464,5 @@ Java 17
 PyTest
 Git
 GitHub
+
 
