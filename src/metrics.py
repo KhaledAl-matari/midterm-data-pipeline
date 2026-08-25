@@ -122,14 +122,14 @@ def build_run_metrics(
         "file_name": loader_metrics.get("file_name"),
         "file_size_mb": file_size_mb,
         "engine_used": loader_metrics.get("used_engine"),
-        "rows_read": loader_metrics.get("read_rows", 0),
+        "rows_read": loader_metrics.get("read_rows", loader_metrics.get("loaded_raw", 0)),
         "raw_loaded": loader_metrics.get("loaded_raw", 0),
         "valid_count": elt_metrics.get("valid", 0),
         "corrected_count": elt_metrics.get("corrected", 0),
         "quarantine_count": elt_metrics.get("quarantined", 0),
         "elapsed_seconds": round(total_seconds, 4),
         "throughput": (
-            round((loader_metrics.get("read_rows", 0) or 0) / total_seconds, 2)
+            round((loader_metrics.get("read_rows", loader_metrics.get("loaded_raw", 0)) or 0) / total_seconds, 2)
             if total_seconds > 0 else 0
         ),
         "batch_size": loader_metrics.get("batch_size", loader_metrics.get("size_batch")),
@@ -204,3 +204,4 @@ def save_run_metrics(
     temp_path.replace(output_path)
 
     print(f"تم حفظ المقاييس في: {output_path}")
+

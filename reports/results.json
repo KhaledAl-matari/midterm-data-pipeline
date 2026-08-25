@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-21T00:03:08.556472+00:00",
-  "total_runs": 3,
+  "updated_at": "2026-08-25T21:56:13.992251+00:00",
+  "total_runs": 7,
   "runs": [
     {
       "id_run": "e6cad633-42b4-407e-bea0-012dfa91bf49",
@@ -184,6 +184,290 @@
       "updated_count": 192262,
       "unchanged_count": 0,
       "run_id": "90b9088b-1158-4097-8e91-43b94837e86a"
+    },
+    {
+      "id_run": "1744ca3f-f3d0-4331-9a4e-939b2ecf4d9a",
+      "run_id": "1744ca3f-f3d0-4331-9a4e-939b2ecf4d9a",
+      "generated_at": "2026-08-25T21:37:02.945700+00:00",
+      "input": {
+        "file_name": "orders_batch_test.csv",
+        "file_size_mb": 0.01,
+        "threshold_mb": 200,
+        "engine": "python_batch"
+      },
+      "raw_load": {
+        "rows": 20,
+        "partitions": null,
+        "seconds_elapsed": 0.1262,
+        "write_seconds": null,
+        "throughput": 158.48
+      },
+      "quality": {
+        "valid": 0,
+        "corrected": 18,
+        "quarantined": 2,
+        "error_counts": {
+          "INVALID_QTY": 1,
+          "INVALID_EMAIL": 1,
+          "INVALID_MONEY": 1,
+          "BAD_JSON": 1,
+          "MISSING_CUSTOMER_ID": 1
+        }
+      },
+      "upsert": {
+        "inserted": 0,
+        "updated": 2,
+        "unchanged": 16
+      },
+      "elt": {
+        "processed": 20,
+        "seconds_elapsed": 0.0879,
+        "throughput": 227.49
+      },
+      "consistency": {
+        "raw_rows": 20,
+        "outcome_rows": 20,
+        "pass": true
+      },
+      "file_name": "orders_batch_test.csv",
+      "file_size_mb": 0.01,
+      "engine_used": "python_batch",
+      "rows_read": 0,
+      "raw_loaded": 20,
+      "valid_count": 0,
+      "corrected_count": 18,
+      "quarantine_count": 2,
+      "elapsed_seconds": 0.2141,
+      "throughput": 0.0,
+      "batch_size": 5000,
+      "partitions": null,
+      "error_case_counts": {
+        "INVALID_QTY": 1,
+        "INVALID_EMAIL": 1,
+        "INVALID_MONEY": 1,
+        "BAD_JSON": 1,
+        "MISSING_CUSTOMER_ID": 1
+      },
+      "inserted_count": 0,
+      "updated_count": 2,
+      "unchanged_count": 16
+    },
+    {
+      "id_run": "1d3a229f-9072-4abc-956f-0526912f7cad",
+      "run_id": "1d3a229f-9072-4abc-956f-0526912f7cad",
+      "generated_at": "2026-08-25T21:37:21.914568+00:00",
+      "input": {
+        "file_name": "orders_batch_test.csv",
+        "file_size_mb": 0.01,
+        "threshold_mb": 200,
+        "engine": "python_batch"
+      },
+      "raw_load": {
+        "rows": 20,
+        "partitions": null,
+        "seconds_elapsed": 0.0262,
+        "write_seconds": null,
+        "throughput": 763.78
+      },
+      "quality": {
+        "valid": 0,
+        "corrected": 18,
+        "quarantined": 2,
+        "error_counts": {
+          "INVALID_QTY": 1,
+          "INVALID_EMAIL": 1,
+          "INVALID_MONEY": 1,
+          "BAD_JSON": 1,
+          "MISSING_CUSTOMER_ID": 1
+        }
+      },
+      "upsert": {
+        "inserted": 0,
+        "updated": 0,
+        "unchanged": 18
+      },
+      "elt": {
+        "processed": 20,
+        "seconds_elapsed": 0.0344,
+        "throughput": 581.29
+      },
+      "consistency": {
+        "raw_rows": 20,
+        "outcome_rows": 20,
+        "pass": true
+      },
+      "file_name": "orders_batch_test.csv",
+      "file_size_mb": 0.01,
+      "engine_used": "python_batch",
+      "rows_read": 0,
+      "raw_loaded": 20,
+      "valid_count": 0,
+      "corrected_count": 18,
+      "quarantine_count": 2,
+      "elapsed_seconds": 0.0606,
+      "throughput": 0.0,
+      "batch_size": 5000,
+      "partitions": null,
+      "error_case_counts": {
+        "INVALID_QTY": 1,
+        "INVALID_EMAIL": 1,
+        "INVALID_MONEY": 1,
+        "BAD_JSON": 1,
+        "MISSING_CUSTOMER_ID": 1
+      },
+      "inserted_count": 0,
+      "updated_count": 0,
+      "unchanged_count": 18
+    },
+    {
+      "id_run": "5096df43-7c85-440f-b4c7-58b69bb25666",
+      "run_id": "5096df43-7c85-440f-b4c7-58b69bb25666",
+      "generated_at": "2026-08-25T21:43:48.039177+00:00",
+      "input": {
+        "file_name": "orders_spark_test.csv",
+        "file_size_mb": 251.05,
+        "threshold_mb": 200,
+        "engine": "pyspark"
+      },
+      "raw_load": {
+        "rows": 600000,
+        "partitions": 8,
+        "seconds_elapsed": 41.1839,
+        "write_seconds": 12.1999,
+        "throughput": 14568.8
+      },
+      "quality": {
+        "valid": 0,
+        "corrected": 545472,
+        "quarantined": 54528,
+        "error_counts": {
+          "MISSING_CUSTOMER_ID": 8521,
+          "INVALID_EMAIL": 8314,
+          "BAD_JSON": 8288,
+          "INVALID_PHONE": 4326,
+          "INVALID_STATUS": 4280,
+          "INVALID_CURRENCY": 4206,
+          "EMPTY_ITEMS": 4201,
+          "MISSING_ORDER_ID": 4200,
+          "INVALID_ITEM_TOTAL": 4189,
+          "INVALID_ORDER_DATE": 4188,
+          "INVALID_MONEY": 4180,
+          "NEGATIVE_PAYMENT_AMOUNT": 4104,
+          "INVALID_QTY": 4071
+        }
+      },
+      "upsert": {
+        "inserted": 0,
+        "updated": 6370,
+        "unchanged": 539102
+      },
+      "elt": {
+        "processed": 600000,
+        "seconds_elapsed": 149.3225,
+        "throughput": 4018.15
+      },
+      "consistency": {
+        "raw_rows": 600000,
+        "outcome_rows": 600000,
+        "pass": true
+      },
+      "file_name": "orders_spark_test.csv",
+      "file_size_mb": 251.05,
+      "engine_used": "pyspark",
+      "rows_read": 600000,
+      "raw_loaded": 600000,
+      "valid_count": 0,
+      "corrected_count": 545472,
+      "quarantine_count": 54528,
+      "elapsed_seconds": 190.5064,
+      "throughput": 3149.5,
+      "batch_size": null,
+      "partitions": 8,
+      "error_case_counts": {
+        "MISSING_CUSTOMER_ID": 8521,
+        "INVALID_EMAIL": 8314,
+        "BAD_JSON": 8288,
+        "INVALID_PHONE": 4326,
+        "INVALID_STATUS": 4280,
+        "INVALID_CURRENCY": 4206,
+        "EMPTY_ITEMS": 4201,
+        "MISSING_ORDER_ID": 4200,
+        "INVALID_ITEM_TOTAL": 4189,
+        "INVALID_ORDER_DATE": 4188,
+        "INVALID_MONEY": 4180,
+        "NEGATIVE_PAYMENT_AMOUNT": 4104,
+        "INVALID_QTY": 4071
+      },
+      "inserted_count": 0,
+      "updated_count": 6370,
+      "unchanged_count": 539102
+    },
+    {
+      "id_run": "51a8927a-3d0e-4da9-803a-fd22d0ecf888",
+      "run_id": "51a8927a-3d0e-4da9-803a-fd22d0ecf888",
+      "generated_at": "2026-08-25T21:56:09.488815+00:00",
+      "input": {
+        "file_name": "orders_batch_test.csv",
+        "file_size_mb": 0.01,
+        "threshold_mb": 200,
+        "engine": "python_batch"
+      },
+      "raw_load": {
+        "rows": 20,
+        "partitions": null,
+        "seconds_elapsed": 0.0154,
+        "write_seconds": null,
+        "throughput": 1296.16
+      },
+      "quality": {
+        "valid": 0,
+        "corrected": 18,
+        "quarantined": 2,
+        "error_counts": {
+          "INVALID_QTY": 1,
+          "INVALID_MONEY": 1,
+          "INVALID_EMAIL": 1,
+          "MISSING_CUSTOMER_ID": 1,
+          "BAD_JSON": 1
+        }
+      },
+      "upsert": {
+        "inserted": 0,
+        "updated": 2,
+        "unchanged": 16
+      },
+      "elt": {
+        "processed": 20,
+        "seconds_elapsed": 0.0296,
+        "throughput": 676.67
+      },
+      "consistency": {
+        "raw_rows": 20,
+        "outcome_rows": 20,
+        "pass": true
+      },
+      "file_name": "orders_batch_test.csv",
+      "file_size_mb": 0.01,
+      "engine_used": "python_batch",
+      "rows_read": 20,
+      "raw_loaded": 20,
+      "valid_count": 0,
+      "corrected_count": 18,
+      "quarantine_count": 2,
+      "elapsed_seconds": 0.045,
+      "throughput": 444.44,
+      "batch_size": 5000,
+      "partitions": null,
+      "error_case_counts": {
+        "INVALID_QTY": 1,
+        "INVALID_MONEY": 1,
+        "INVALID_EMAIL": 1,
+        "MISSING_CUSTOMER_ID": 1,
+        "BAD_JSON": 1
+      },
+      "inserted_count": 0,
+      "updated_count": 2,
+      "unchanged_count": 16
     }
   ]
 }
