@@ -1,3 +1,5 @@
+import os
+
 from pathlib import Path
 
 # مسارات المشروع
@@ -22,8 +24,8 @@ SAMPLE_ROWS = 100_000
 BATCH_SIZE = 5_000
 
 # إعدادات الاتصال بقاعدة بيانات MongoDB
-MONGO_URI = "mongodb://127.0.0.1:27017"
-MONGO_DATABASE = "midterm_data_pipeline"
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017")
+MONGO_DATABASE = os.getenv("MONGO_DATABASE", "midterm_data_pipeline")
 
 # أسماء المجموعات داخل MongoDB
 RAW_COLLECTION = "orders_raw"
