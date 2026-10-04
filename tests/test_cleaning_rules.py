@@ -32,7 +32,7 @@ def test_normalize_text_qty():
 
     result = clean_and_classify(row)
 
-    assert "INVALID_QTY" not in result["error_codes"]
+    assert "negative_quantity" not in result["error_codes"]
     assert result["cleaned_record"]["total_amount"] == 3000.0
 
 
@@ -60,4 +60,4 @@ def test_invalid_date_goes_to_quarantine():
     result = clean_and_classify(row)
 
     assert result["outcome"] == "quarantine"
-    assert "INVALID_ORDER_DATE" in result["error_codes"]
+    assert "invalid_date_impossible" in result["error_codes"]

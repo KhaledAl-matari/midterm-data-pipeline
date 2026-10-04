@@ -128,7 +128,7 @@ def normalize_money(
     error_codes: list[str],
     error_details: list[dict[str, Any]],
 ) -> None:
-    """توحيد الحقول المالية إلى قيمة رقمية."""
+    """Normalize monetary values while treating standard numeric CSV strings as already valid."""
     old_value = record.get(field)
     new_value = parse_number(old_value)
 
@@ -139,19 +139,42 @@ def normalize_money(
             "INVALID_MONEY",
             field,
             old_value,
-            "القيمة المالية غير قابلة للتحويل بشكل آمن",
+            "Invalid monetary value",
         )
         return
 
-    _add_correction(
-        corrections,
-        field,
-        old_value,
-        new_value,
-        "NORMALIZE_MONEY",
-    )
-    record[field] = new_value
+    # CSV naturally reads numeric fields as strings.
+    # A standard ASCII numeric string such as "2000.0" is not a correction.
+    correction_needed = False
 
+    if not isinstance(old_value, (int, float)):
+        raw_text = str(old_value).strip()
+        standard_numeric = re.fullmatch(r"[+-]?[0-9]+(?:\.[0-9]+)?", raw_text)
+
+        if standard_numeric is None:
+            correction_needed = True
+
+    if correction_needed:
+        translated_text = raw_text.translate(ARABIC_DIGITS)
+
+        if field == "delivery_cost" and translated_text != raw_text:
+            rule_code = "arabic_digits_delivery_cost"
+        elif field == "payment_amount" and translated_text != raw_text:
+            rule_code = "arabic_digits_payment_amount"
+        elif field == "total_amount" and "," in raw_text:
+            rule_code = "price_with_thousands_commas"
+        else:
+            rule_code = "normalize_money"
+
+        _add_correction(
+            corrections,
+            field,
+            old_value,
+            new_value,
+            rule_code,
+        )
+
+    record[field] = new_value
 
 def normalize_date(
     record: dict[str, Any],
@@ -159,7 +182,7 @@ def normalize_date(
     error_codes: list[str],
     error_details: list[dict[str, Any]],
 ) -> None:
-    """توحيد صيغ التاريخ المعروفة إلى صيغة واحدة."""
+    """Validate and normalize known date formats without marking canonical ISO dates as corrected."""
     field = "order_date"
     old_value = record.get(field)
 
@@ -170,24 +193,27 @@ def normalize_date(
             "MISSING_ORDER_DATE",
             field,
             old_value,
-            "تاريخ الطلب مفقود",
+            "Missing order date",
         )
         return
 
     value = str(old_value).strip()
 
     formats = (
-        "%Y-%m-%dT%H:%M:%S",
-        "%Y-%m-%d %H:%M:%S",
-        "%d-%m-%Y %H:%M:%S",
-        "%Y/%m/%d %H:%M:%S",
+        ("%Y-%m-%dT%H:%M:%S", False),
+        ("%Y-%m-%d %H:%M:%S", False),
+        ("%d-%m-%Y %H:%M:%S", True),
+        ("%d-%m-%Y", True),
+        ("%Y/%m/%d %H:%M:%S", True),
     )
 
     parsed = None
+    correction_needed = False
 
-    for fmt in formats:
+    for fmt, needs_correction in formats:
         try:
             parsed = datetime.strptime(value, fmt)
+            correction_needed = needs_correction
             break
         except ValueError:
             continue
@@ -196,25 +222,29 @@ def normalize_date(
         _add_error(
             error_codes,
             error_details,
-            "INVALID_ORDER_DATE",
+            "invalid_date_impossible",
             field,
             old_value,
-            "صيغة التاريخ غير معروفة أو التاريخ غير صالح",
+            "Invalid or unsupported order date",
         )
         return
 
     new_value = parsed.strftime("%Y-%m-%d %H:%M:%S")
 
-    _add_correction(
-        corrections,
-        field,
-        old_value,
-        new_value,
-        "NORMALIZE_ORDER_DATE",
-    )
+    if correction_needed:
+        _add_correction(
+            corrections,
+            field,
+            old_value,
+            new_value,
+            (
+                "date_dd_mm_yyyy"
+                if re.match(r"^\d{2}-\d{2}-\d{4}", value)
+                else "normalize_order_date"
+            ),
+        )
 
     record[field] = new_value
-
 
 def normalize_phone(
     record: dict[str, Any],
@@ -222,60 +252,64 @@ def normalize_phone(
     error_codes: list[str],
     error_details: list[dict[str, Any]],
 ) -> None:
-    """توحيد رقم الهاتف بدون تخمين الرقم نفسه."""
+    """Validate Yemen phone numbers; local 9-digit format is canonical."""
     field = "customer_phone"
     old_value = record.get(field)
 
     if old_value is None or not str(old_value).strip():
         return
 
-    value = str(old_value).strip().translate(ARABIC_DIGITS)
+    raw_value = str(old_value).strip()
+    value = raw_value.translate(ARABIC_DIGITS)
     value = re.sub(r"[\s\-]", "", value)
 
-    # توحيد رمز اليمن إذا كان موجودًا
-    if value.startswith("00967"):
-        value = "+967" + value[5:]
-    elif value.startswith("967"):
-        value = "+967" + value[3:]
+    correction_needed = False
 
     if value.startswith("+967"):
         local_part = value[4:]
-
-        if not local_part.isdigit() or len(local_part) != 9:
-            _add_error(
-                error_codes,
-                error_details,
-                "INVALID_PHONE",
-                field,
-                old_value,
-                "رقم الهاتف غير صالح",
-            )
-            return
-
-    elif value.isdigit() and len(value) == 9:
-        value = "+967" + value
-
+        correction_needed = True
+    elif value.startswith("00967"):
+        local_part = value[5:]
+        correction_needed = True
+    elif value.startswith("967") and len(value) == 12:
+        local_part = value[3:]
+        correction_needed = True
     else:
+        local_part = value
+
+    if not local_part.isdigit() or len(local_part) != 9:
         _add_error(
             error_codes,
             error_details,
-            "INVALID_PHONE",
+            (
+                "invalid_phone_too_short"
+                if len(local_part) < 9
+                else "invalid_phone"
+            ),
             field,
             old_value,
-            "رقم الهاتف غير صالح",
+            "Invalid Yemen phone number",
         )
         return
 
-    _add_correction(
-        corrections,
-        field,
-        old_value,
-        value,
-        "NORMALIZE_PHONE",
-    )
+    formatting_changed = local_part != raw_value
 
-    record[field] = value
+    if correction_needed or formatting_changed:
+        rule_code = (
+            "phone_with_country_code"
+            if correction_needed
+            else "normalize_phone"
+        )
 
+        _add_correction(
+            corrections,
+            field,
+            old_value,
+            local_part,
+            rule_code,
+        )
+
+    record[field] = local_part
 
 def normalize_email(
     record: dict[str, Any],
@@ -302,10 +336,21 @@ def normalize_email(
 
     # ?? ??? ?? ??? ??? ???? ??? ??????? ????? ??? ????.
     if not re.fullmatch(pattern, corrected_value):
+        domain_part = (
+            corrected_value.rsplit("@", 1)[-1]
+            if "@" in corrected_value
+            else ""
+        )
+        email_error_code = (
+            "email_missing_domain"
+            if not domain_part or "." not in domain_part
+            else "invalid_email"
+        )
+
         _add_error(
             error_codes,
             error_details,
-            "INVALID_EMAIL",
+            email_error_code,
             field,
             old_value,
             "???? ?????? ?????????? ??? ????? ??? ???? ??????? ?????",
@@ -313,7 +358,10 @@ def normalize_email(
         return
 
     if corrected_value != value:
-        rule_code = "EMAIL_REPEATED_SYMBOLS"
+        if "@@" in value:
+            rule_code = "email_double_at"
+        else:
+            rule_code = "normalize_email_symbols"
     else:
         rule_code = "NORMALIZE_EMAIL"
 
@@ -342,7 +390,7 @@ def normalize_enums(
         _add_error(
             error_codes,
             error_details,
-            "INVALID_STATUS",
+            "unknown_order_status",
             "status",
             status,
             "حالة الطلب غير موجودة ضمن الحالات المعتمدة",
@@ -383,7 +431,7 @@ def normalize_enums(
             "currency",
             old_currency,
             new_currency,
-            "NORMALIZE_CURRENCY",
+            "currency_arabic_name",
         )
 
         record["currency"] = new_currency
@@ -392,7 +440,7 @@ def normalize_enums(
         _add_error(
             error_codes,
             error_details,
-            "INVALID_CURRENCY",
+            "unknown_currency",
             "currency",
             record.get("currency"),
             "العملة غير معروفة",
@@ -413,7 +461,7 @@ def validate_items(
         _add_error(
             error_codes,
             error_details,
-            "EMPTY_ITEMS",
+            "empty_items",
             field,
             raw_items,
             "قائمة عناصر الطلب فارغة",
@@ -426,7 +474,7 @@ def validate_items(
         _add_error(
             error_codes,
             error_details,
-            "BAD_JSON",
+            "corrupted_items_json",
             field,
             raw_items,
             "JSON الخاص بعناصر الطلب غير صالح",
@@ -437,7 +485,7 @@ def validate_items(
         _add_error(
             error_codes,
             error_details,
-            "EMPTY_ITEMS",
+            "empty_items",
             field,
             raw_items,
             "قائمة عناصر الطلب فارغة",
@@ -458,6 +506,19 @@ def validate_items(
             )
             return None
 
+        sku = item.get("sku")
+
+        if sku is None or not str(sku).strip():
+            _add_error(
+                error_codes,
+                error_details,
+                "missing_item_sku",
+                f"items_json[{index}].sku",
+                sku,
+                "Missing item SKU",
+            )
+            return None
+
         qty = item.get("qty")
 
         # تصحيح الكمية إذا كانت رقمًا صحيحًا مكتوبًا كنص
@@ -472,7 +533,7 @@ def validate_items(
                     f"items_json[{index}].qty",
                     qty,
                     new_qty,
-                    "NORMALIZE_ITEM_QTY",
+                    "qty_as_string_in_items",
                 )
 
                 item["qty"] = new_qty
@@ -485,7 +546,11 @@ def validate_items(
             _add_error(
                 error_codes,
                 error_details,
-                "INVALID_QTY",
+                (
+                    "negative_quantity"
+                    if isinstance(qty, (int, float)) and qty < 0
+                    else "invalid_quantity"
+                ),
                 field,
                 item,
                 "كمية العنصر يجب أن تكون رقمًا أكبر من صفر",
@@ -543,7 +608,7 @@ def recalculate_total(
             "total_amount",
             old_total,
             calculated_total,
-            "RECALCULATE_TOTAL",
+            "total_amount_mismatch_recomputable",
         )
 
         record["total_amount"] = calculated_total
@@ -572,7 +637,11 @@ def clean_and_classify(
                 field,
                 value,
                 new_value,
-                "TRIM_WHITESPACE",
+                (
+                    "status_extra_spaces"
+                    if field == "status"
+                    else "trim_whitespace"
+                ),
             )
 
             record[field] = new_value
@@ -582,7 +651,7 @@ def clean_and_classify(
         _add_error(
             error_codes,
             error_details,
-            "MISSING_ORDER_ID",
+            "missing_order_id",
             "order_id",
             record.get("order_id"),
             "رقم الطلب مفقود ولا يمكن إنشاء المفتاح التجاري",
@@ -593,7 +662,7 @@ def clean_and_classify(
         _add_error(
             error_codes,
             error_details,
-            "MISSING_CUSTOMER_ID",
+            "missing_customer_id",
             "customer_id",
             record.get("customer_id"),
             "رقم العميل مفقود",
@@ -695,6 +764,17 @@ def clean_and_classify(
     )
 
     # تحديد النتيجة النهائية للسجل
+    if len(error_codes) > 1:
+        error_details.append(
+            {
+                "code": "multiple_conflicting_errors",
+                "field": "multiple_fields",
+                "value": list(error_codes),
+                "message": "Multiple conflicting validation errors",
+            }
+        )
+        error_codes[:] = ["multiple_conflicting_errors"]
+
     if error_codes:
         outcome = "quarantine"
     elif corrections:

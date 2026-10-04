@@ -24,11 +24,17 @@ def base_record():
 
 
 def test_correctable_record():
-    result = clean_and_classify(base_record())
+    row = base_record()
+    row["currency"] = "ريال يمني"
+
+    result = clean_and_classify(row)
 
     assert result["outcome"] == "corrected"
     assert result["error_codes"] == []
-    assert len(result["corrections"]) > 0
+    assert any(
+        correction["rule_code"] == "currency_arabic_name"
+        for correction in result["corrections"]
+    )
 
 
 def test_bad_json_is_quarantined():
@@ -38,7 +44,7 @@ def test_bad_json_is_quarantined():
     result = clean_and_classify(row)
 
     assert result["outcome"] == "quarantine"
-    assert "BAD_JSON" in result["error_codes"]
+    assert "corrupted_items_json" in result["error_codes"]
 
 
 def test_missing_order_id_is_quarantined():
@@ -48,7 +54,7 @@ def test_missing_order_id_is_quarantined():
     result = clean_and_classify(row)
 
     assert result["outcome"] == "quarantine"
-    assert "MISSING_ORDER_ID" in result["error_codes"]
+    assert "missing_order_id" in result["error_codes"]
 
 
 def test_negative_quantity_is_quarantined():
@@ -58,7 +64,7 @@ def test_negative_quantity_is_quarantined():
     result = clean_and_classify(row)
 
     assert result["outcome"] == "quarantine"
-    assert "INVALID_QTY" in result["error_codes"]
+    assert "negative_quantity" in result["error_codes"]
 
 def test_valid_record_needs_no_correction():
     from src.quality_rules import VALID_STATUSES, VALID_PAYMENT_STATUSES
@@ -69,7 +75,7 @@ def test_valid_record_needs_no_correction():
         "status": next(iter(VALID_STATUSES)),
         "customer_id": "C-VALID-1",
         "customer_name": "Customer",
-        "customer_phone": "+967714123456",
+        "customer_phone": "714123456",
         "customer_email": "user@example.com",
         "city": "Sanaa",
         "district": "Test",
